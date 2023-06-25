@@ -1,27 +1,28 @@
-import function as f
-import ui
+import Note
 
 
-def run():
-    input_from_user = ''
-    while input_from_user != '7':
-        ui.menu()
-        input_from_user = input().strip()
-        if input_from_user == '1':
-            f.show('all')
-        if input_from_user == '2':
-            f.add()
-        if input_from_user == '3':
-            f.show('all')
-            f.id_edit_del_show('del')
-        if input_from_user == '4':
-            f.show('all')
-            f.id_edit_del_show('edit')
-        if input_from_user == '5':
-            f.show('date')
-        if input_from_user == '6':
-            f.show('id')
-            f.id_edit_del_show('show')
-        if input_from_user == '7':
-            ui.goodbuy()
-            break
+def write_file(array, mode):
+    file = open("notes.csv", mode='w', encoding='utf-8')
+    file.seek(0)
+    file.close()
+    file = open("notes.csv", mode=mode, encoding='utf-8')
+    for notes in array:
+        file.write(Note.Note.to_string(notes))
+        file.write('\n')
+    file.close
+
+
+def read_file():
+    try:
+        array = []
+        file = open("notes.csv", "r", encoding='utf-8')
+        notes = file.read().strip().split("\n")
+        for n in notes:
+            split_n = n.split(';')
+            note = Note.Note(
+                id = split_n[0], title = split_n[1], body = split_n[2], date = split_n[3])
+            array.append(note)
+    except Exception:
+        print('Нет сохраненных заметок...')
+    finally:
+        return array
